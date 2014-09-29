@@ -29,7 +29,7 @@ class res_partner(osv.osv):
                 return {
                     'value': {'name': "El numero Ruc ingresado es invalido"}
                 }
-        return {'value': {}}
+        return {'value': {'name': False, 'street': False}}
 
     _columns = {
         'vat': fields.char('TIN', size=11, help="Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements.")
