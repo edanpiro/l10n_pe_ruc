@@ -12,6 +12,7 @@
     "category": "",
     "description": "Validación de RUC",
     'data': [
+        "res_partner/res_partner_view.xml"
     ],
     'installable': True,
     'active': False
