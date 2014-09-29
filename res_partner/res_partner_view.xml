@@ -9,8 +9,7 @@
                 <xpath expr="//field[@name='property_account_position']" position="after">
                     <label for="vat"/>
                     <div name="vat_info">
-                        <field name="vat" placeholder="1044129371"/>
-                        <button colspan="2" name="button_check_vat" string="Validar" type="object" icon="gtk-execute" class="oe_inline"/>
+                        <field name="vat" placeholder="1044129371" on_change="on_change_ruc(vat)"/>
                     </div>
                 </xpath>
             </field>
