@@ -17,15 +17,19 @@ class res_partner(osv.osv):
             cliente = requests.get(link)
             cliente = cliente.text.replace('\r', '').replace('\n', '').replace('\t', '')
             root = html.fromstring(cliente)
-            print root[2].attrib
-            print root[2][0][0].text_content()
-            print root[2][0][7].text_content()
-            print root[2][0][9].text_content()
             name = root[2][0][0].text_content().split('-')
-            return {
-                'value': {'name': name[1][1:-1]}
-            }
-        return {}
+            if root[2].attrib['id'] == 'frstcard':
+                name = root[2][0][0].text_content().split('-')
+                street = root[2][0][9].text_content()
+                return {
+                    'value': {'name': name[1][1:-1],
+                              'street': street[9:]}
+                }
+            else:
+                return {
+                    'value': {'name': "El numero Ruc ingresado es invalido"}
+                }
+        return {'value': {}}
 
     _columns = {
         'vat': fields.char('TIN', size=11, help="Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements.")
