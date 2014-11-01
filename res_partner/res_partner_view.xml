@@ -9,7 +9,7 @@
                 <xpath expr="//field[@name='property_account_position']" position="after">
                     <label for="vat"/>
                     <div name="vat_info">
-                        <field name="vat" placeholder="1044129371" on_change="on_change_ruc(vat)"/>
+                        <field name="vat" placeholder="1044129371" on_change="on_change_ruc(vat)" attrs="{'required':[('is_company','=',True)]}"/>
                     </div>
                 </xpath>
             </field>
