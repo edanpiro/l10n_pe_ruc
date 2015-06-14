@@ -2,17 +2,15 @@
 
 
 {
-    "name": "Validar RUC",
+    "name": "Validate RUC",
     "version": "1.0",
-    "depends": [
-        "base"
-    ],
+    "depends": ["base"],
     "author": "Edgard Pimentel pimentelrojas@gmail.com",
     "website": "",
-    "category": "",
-    "description": "Validación de RUC",
+    "category": "account",
+    "description": "Validate RUC",
     'data': [
-        "res_partner/res_partner_view.xml"
+        "view/res_partner_view.xml"
     ],
     'installable': True,
     'active': False
