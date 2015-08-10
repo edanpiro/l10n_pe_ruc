@@ -8,11 +8,19 @@ import StringIO
 from PIL import Image
 from bs4 import BeautifulSoup
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+
+    @api.one
+    @api.constrains('vat')
+    def _check_vat(self):
+        partner = self.search([('is_company', '=', True), '!', ('id', '=', self.id)])
+        vat = [obj.vat for obj in partner]
+        if self.vat in vat:
+            raise ValidationError('El numero de documento ya existe')
 
     @api.multi
     def button_check(self):
@@ -83,5 +91,15 @@ class ResPartner(models.Model):
                 raise except_orm(_('Error !'),
                                  _('Debe tener 11 digitos'))
         return False
+
+    document_type = fields.Selection(
+        [('0', 'OTROS TIPOS DE DOCUMENTOS'),
+         ('1', 'DOCUMENTO NACIONAL DE IDENTIDAD (DNI)'),
+         ('4', 'CARNET DE EXTRANJERIA'),
+         ('6', 'REGISTRO UNICO DE CONTRIBUYENTES'),
+         ('7', 'PASAPORTE'),
+         ('A', 'CEDULA DIPLOMÁTICA DE IDENTIDAD')],
+        'Documento', default='6'
+    )
 
     vat = fields.Char('TIN', size=11, help="Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements.")
