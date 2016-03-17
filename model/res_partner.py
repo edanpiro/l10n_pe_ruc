@@ -17,10 +17,13 @@ class ResPartner(models.Model):
     @api.one
     @api.constrains('vat')
     def _check_vat(self):
-        partner = self.search([('is_company', '=', True), '!', ('id', '=', self.id)])
-        vat = [obj.vat for obj in partner]
-        if self.vat in vat:
-            raise ValidationError('El numero de documento ya existe')
+        for obj in self:
+            if obj.is_company:
+                partner = self.search([('is_company', '=', True),
+                                       '!', ('id', '=', self.id)])
+                vat = [obj.vat for obj in partner]
+                if self.vat in vat:
+                    raise ValidationError('El numero de documento ya existe')
 
     @api.multi
     def button_check(self):
