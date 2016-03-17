@@ -71,7 +71,7 @@ class ResPartner(models.Model):
                             for li in text_consult:
                                 if temp == 1:
                                     soup = BeautifulSoup(li)
-                                    street = soup.td.string
+                                    street = soup.td.string.replace('  ', '')
                                     break
                                 if li.find("Domicilio Fiscal:") != -1:
                                     temp = 1
