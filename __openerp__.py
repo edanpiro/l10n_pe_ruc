@@ -4,7 +4,7 @@
 {
     "name": "Validate RUC",
     "version": "1.0",
-    "depends": ["base"],
+    "depends": ["base", "account"],
     "author": "Edgard Pimentel pimentelrojas@gmail.com",
     "website": "",
     "category": "account",
