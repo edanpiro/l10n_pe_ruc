@@ -8,12 +8,15 @@ import logging
 
 from PIL import Image
 from bs4 import BeautifulSoup
+from lxml import etree
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+
+    state = fields.Selection([('enabled', 'Habido'), ('disable', 'No habido')])
 
     @api.one
     @api.constrains('vat')
@@ -179,9 +182,9 @@ class ResPartner(models.Model):
                                 tstate = str(soup.p.string)
                                 tstate = tstate[0:6]
                                 if tstate == 'HABIDO':
-                                    tstate = 'habido'
+                                    tstate = 'enabled'
                             else:
-                                tstate = 'nhabido'
+                                tstate = 'disable'
                             break
 
                         if li.find("Condici&oacute;n del Contribuyente:") != -1:
@@ -190,9 +193,47 @@ class ResPartner(models.Model):
                         'names': tncomercial,
                         'name': tncomercial,
                         'street': tdireccion,
-                        'is_company': True
+                        'is_company': True,
+                        'state': tstate
                     })
                     self.write(res)
+        elif vat and document_type == '1':
+            if len(vat) == 8:
+                for i in range(10):
+                    consulta, captcha_val = self._get_captcha(document_type)
+                    if not consulta:
+                        res['warning'] = {}
+                        res['warning']['title'] = _('Connection error')
+                        res['warning']['message'] = _('The server is not available try again!')
+                        return res
+                    if len(captcha_val) == 4:
+                        break
+                payload = {'accion': 'buscar', 'nuDni': vat, 'imagen': captcha_val}
+                post = consulta.post("https://cel.reniec.gob.pe/valreg/valreg.do", params=payload)
+                texto_consulta = post.text
+                parser = etree.HTMLParser()
+                tree = etree.parse(StringIO.StringIO(texto_consulta), parser)
+                res = {}
+                name = ''
+                for _td in tree.findall("//td[@class='style2']"):
+                    if _td.text:
+                        _name = _td.text.split('\n')
+                        for i in range(len(_name)):
+                            _name[i] = _name[i].strip()
+                        name = ' '.join(_name)
+                        break
+                error_captcha = "Ingrese el código que aparece en la imagen"
+                error_dni = "El DNI N°"
+                if error_captcha==name.strip().encode('utf-8'):
+                    return self.button_check()
+                elif error_dni == name.strip().encode('utf-8'):
+                    return except_orm(_('Error!'),
+                                      _('El DNI ingresado es incorrecto'))
+                res['name'] = name.strip()
+                res['names'] = name.strip()
+                res['is_company'] = True
+                res['registration_name'] = False
+                self.write(res)
         else:
             return False
 

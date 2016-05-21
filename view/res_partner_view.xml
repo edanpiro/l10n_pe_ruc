@@ -6,6 +6,11 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
+                <sheet position="before">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="enabled,disable" readonly="True"/>
+                    </header>
+                </sheet>
                 <xpath expr="//field[@name='property_account_position']" position="after">
                     <field name="document_type"/>
                     <label for="vat"/>
