@@ -11,12 +11,12 @@
                         <field name="state" widget="statusbar" statusbar_visible="enabled,disable" readonly="True"/>
                     </header>
                 </sheet>
-                <xpath expr="//field[@name='property_account_position']" position="after">
+                <xpath expr="//field[@name='property_payment_term_id']" position="after">
                     <field name="document_type"/>
                     <label for="vat"/>
                     <div name="vat_info">
                         <field name="vat"/>
-                        <button colspan="2" name="button_check" string="Check Validity" type="object" icon="gtk-execute" class="oe_inline"/>
+                        <button colspan="2" name="button_check" string="Check Validity" type="object" class="oe_highlight"/>
                     </div>
                 </xpath>
             </field>

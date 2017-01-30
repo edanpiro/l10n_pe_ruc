@@ -9,14 +9,15 @@ import logging
 from PIL import Image
 from bs4 import BeautifulSoup
 from lxml import etree
-from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import except_orm, Warning, RedirectWarning, ValidationError
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     state = fields.Selection([('enabled', 'Habido'), ('disable', 'No habido')])
+    vat = fields.Char('TIN', size=11, help="Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements.")
 
     @api.one
     @api.constrains('vat')
@@ -247,5 +248,3 @@ class ResPartner(models.Model):
          ('A', 'CEDULA DIPLOMÁTICA DE IDENTIDAD')],
         'Documento', default='6'
     )
-
-    vat = fields.Char('TIN', size=11, help="Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements.")
